@@ -20,3 +20,16 @@ Af:
 - [ ] Scoren optellen en laten zien
 - [ ] Sprites toevoegen.
 
+
+
+# Edit school inlever opdracht week 4.
+- [x] Klassendiagram
+- [ ] Interface
+- [x] Static utility
+- [x] Singleton
+- [x] Strategy
+- [x] Encapsulation
+- [x] Composition
+- [x] Inheritance
+
+Je mist alleen nog een interface. Dan zou ik erna focussen op de code afmaken en commentaar aan code toevegen. goed werk! Hetgeen wat er staat ziet er duidelijk en overzichtelijk uit. 
