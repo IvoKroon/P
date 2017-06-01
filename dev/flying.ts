@@ -1,24 +1,23 @@
 /// <reference path="rocket.ts" />
 
 
-class Flying extends Rocket{
+class Flying extends Rocket {
 
-    constructor(x:number,y:number, context:CanvasRenderingContext2D){
-        super(x,y, context);
+    constructor(x: number, y: number, context: CanvasRenderingContext2D) {
+        super(x, y, context);
 
         this.speed = 2;
         this.sideSpeed = 3;
     }
-    render(){
+    render() {
         super.render();
     }
-    goLeft(){
-        console.log("HIT LEFT");
+    goLeft() {
         this.x -= this.sideSpeed;
     }
-    goRight(){
+    goRight() {
         this.x += this.sideSpeed;
     }
-    actionKey(){}
-    move(){}
+    actionKey() { }
+    move() { }
 }

@@ -1,25 +1,25 @@
 class Game {
-    public static instance:Game;
+    public static instance: Game;
 
-    private canvas:HTMLCanvasElement;
-    private context:CanvasRenderingContext2D;
+    private canvas: HTMLCanvasElement;
+    private context: CanvasRenderingContext2D;
 
-    private keyHandling:KeyHandling;
+    private keyHandling: KeyHandling;
 
-    private rocket:Rocket;
-    private background:Background;
+    private rocket: Rocket;
+    private background: Background;
 
-    private asteroid:Asteroid;
-    
+    private asteroid: Asteroid;
+
 
     //loader
-    public loader(){
+    public loader() {
         this.canvas = <HTMLCanvasElement>document.getElementById('canvas');
         this.context = <any>this.canvas.getContext('2d');
-        this.rocket = new Flying(200,300, this.context);
+        this.rocket = new Flying(200, 300, this.context);
         this.asteroid = new Falling(this.context);
 
-        this.background = new Background("BLA",2, this.context);
+        this.background = new Background("BLA", 2, this.context);
         this.background.load();
 
         this.keyHandling = new KeyHandling(this.rocket);
@@ -27,16 +27,16 @@ class Game {
         requestAnimationFrame(() => this.gameLoop());
     }
 
-    public static getInstance(){
-        if(!Game.instance){
+    public static getInstance() {
+        if (!Game.instance) {
             Game.instance = new Game();
             Game.instance.loader();
         }
         return Game.instance;
     }
 
-    gameLoop(){
-        this.context.clearRect(0,0,400,400);
+    gameLoop() {
+        this.context.clearRect(0, 0, 400, 400);
         this.background.render();
         this.asteroid.move();
 
@@ -45,9 +45,9 @@ class Game {
         this.keyHandling.doAction();
         requestAnimationFrame(() => this.gameLoop());
     }
-} 
+}
 
 // load
-window.addEventListener("load", function() {
+window.addEventListener("load", function () {
     Game.getInstance();
 });
