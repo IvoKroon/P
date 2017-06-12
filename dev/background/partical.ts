@@ -1,6 +1,5 @@
 class Partical extends PIXI.Graphics{
 
-    private graphics:PIXI.Graphics;
     private color:number;
     private opacity:number;
     public game:Game;

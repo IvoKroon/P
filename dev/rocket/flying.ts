@@ -30,13 +30,13 @@ class Flying extends Rocket implements Observer{
 
     reloadKeyHit(){}
     
-    goLeft(){
+    private goLeft(){
         if(!Util.Collision.leftSide(this.game,this)){
             this.x -= this.sideSpeed;
             this.hitBox.x -= this.sideSpeed;
         }
     }
-    goRight(){
+    private goRight(){
         if(!Util.Collision.rightSide(this.game,this)){
             this.x += this.sideSpeed;
             this.hitBox.x += this.sideSpeed;

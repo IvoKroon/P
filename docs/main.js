@@ -286,8 +286,6 @@ var Background = (function () {
             this.addStars(Util.Random.random(-10, this.game.app.screen.width), 0);
         }
     };
-    Background.prototype.starRemover = function () {
-    };
     Background.prototype.move = function () {
         this.starSpawner();
         for (var i = 0; i < this.stars.length; i++) {
@@ -521,16 +519,6 @@ var Util;
         };
         Collision.rightSide = function (game, rocket) {
             if (rocket.x >= game.app.screen.width - rocket.width) {
-                return true;
-            }
-            return false;
-        };
-        Collision.hitSide = function (game, rocket) {
-            console.log(game.app.screen.width);
-            if (rocket.x >= game.app.screen.width - rocket.width) {
-                return true;
-            }
-            else if (rocket.x <= 0) {
                 return true;
             }
             return false;

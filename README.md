@@ -8,15 +8,14 @@ Af:
 - [x] Raket beweegt
 - [x] Asteroid beweegt
 - [x] Strategy pattern
+- [x] Hit detectie
+- [x] Observer
+- [x] Interface
+- [x] Namespace
+- [x] Abstract class
+- [x] Enum class
+- [x] Pixi js libirary
 
 #### UML
 
 ![UML](https://raw.githubusercontent.com/IvoKroon/P/master/UML-V1.png)
-
-#### Nog te doen:
-- [ ] Fullscreen maken
-- [ ] Launch functie
-- [ ] Hit detectie functie aan koppelen
-- [ ] Scoren optellen en laten zien
-- [ ] Sprites toevoegen.
-

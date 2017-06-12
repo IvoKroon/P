@@ -4,7 +4,7 @@ class Background{
     private speed:number;
     private stars:Array<Star> = [];
     private game:Game;
-    private timer:number;
+    // private timer:number;
 
     constructor(speed:number, appWidth:number, appHeight:number){
         // super(0,0,appWidth,appHeight);
@@ -34,11 +34,7 @@ class Background{
         }
     }
 
-    private starRemover(){
-
-    }
-
-     move(){
+    move(){
         this.starSpawner();
         for(let i = 0; i < this.stars.length; i++){
 
