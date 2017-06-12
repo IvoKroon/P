@@ -146,6 +146,10 @@ var Game = (function () {
             this.app.renderer.render(this.app.stage);
             this.timer++;
         }
+        else {
+            this.gameOverText.reRender();
+            this.extraInfo.reRender();
+        }
         requestAnimationFrame(function () { return _this.gameLoop(); });
     };
     Game.prototype.loadGameOver = function () {
@@ -467,12 +471,16 @@ var Flying = (function (_super) {
     };
     Flying.prototype.reloadKeyHit = function () { };
     Flying.prototype.goLeft = function () {
-        this.x -= this.sideSpeed;
-        this.hitBox.x -= this.sideSpeed;
+        if (!Util.Collision.leftSide(this.game, this)) {
+            this.x -= this.sideSpeed;
+            this.hitBox.x -= this.sideSpeed;
+        }
     };
     Flying.prototype.goRight = function () {
-        this.x += this.sideSpeed;
-        this.hitBox.x += this.sideSpeed;
+        if (!Util.Collision.rightSide(this.game, this)) {
+            this.x += this.sideSpeed;
+            this.hitBox.x += this.sideSpeed;
+        }
     };
     Flying.prototype.move = function () {
         this.reRender();
@@ -501,6 +509,28 @@ var Util;
         };
         Collision.hitBottom = function (y, bottom) {
             if (y >= bottom) {
+                return true;
+            }
+            return false;
+        };
+        Collision.leftSide = function (game, rocket) {
+            if (rocket.x <= 0) {
+                return true;
+            }
+            return false;
+        };
+        Collision.rightSide = function (game, rocket) {
+            if (rocket.x >= game.app.screen.width - rocket.width) {
+                return true;
+            }
+            return false;
+        };
+        Collision.hitSide = function (game, rocket) {
+            console.log(game.app.screen.width);
+            if (rocket.x >= game.app.screen.width - rocket.width) {
+                return true;
+            }
+            else if (rocket.x <= 0) {
                 return true;
             }
             return false;

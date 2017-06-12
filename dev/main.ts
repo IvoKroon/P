@@ -109,6 +109,9 @@ class Game {
             
             this.app.renderer.render(this.app.stage);
             this.timer++;
+        }else{
+            this.gameOverText.reRender();
+            this.extraInfo.reRender();
         }
 
         requestAnimationFrame(() => this.gameLoop());
