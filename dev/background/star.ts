@@ -1,3 +1,5 @@
+/// <reference path="partical.ts" />
+
 class Star extends Partical{
     private z:number;
     constructor(x:number,y:number,z:number, r:number){

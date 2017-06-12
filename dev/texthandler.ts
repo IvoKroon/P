@@ -4,7 +4,6 @@ class TextHandler extends Vector{
     private fontSize:number;
     private color:string;
     private textString:string;
-    private game:Game;
 
     constructor(text:string, fontSize:number, color:string, x:number, y:number){
         super(x,y);
@@ -14,11 +13,6 @@ class TextHandler extends Vector{
         this.init();
         this.game = Game.getInstance();
         this.render();
-       
-        // richText.x = 30;
-        // richText.y = 180;
-
-        // stage.addChild(richText);
     }
 
     private init(){
@@ -28,19 +22,12 @@ class TextHandler extends Vector{
             fontFamily: 'Arial',
             fill: '#FFFFFF',
             align: 'center',
-            // stroke: '#FFFFFF',
-            // strokeThickness: 6
         });
         this.text.anchor.set(0.5);
         this.text.x = this.x;
         this.text.y = this.y;
 
     }
-    public reRender(){
-        this.remove();
-        this.render();
-    }
-
     private remove(){
         this.game.app.stage.removeChild(this.text); 
     }
@@ -49,6 +36,10 @@ class TextHandler extends Vector{
        this.game.app.stage.addChild(this.text); 
     }
 
+    public reRender(){
+        this.remove();
+        this.render();
+    }
     public setText(text:string):void{
         this.text.text = text;
     }

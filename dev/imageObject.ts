@@ -32,7 +32,7 @@ abstract class ImageObject extends PIXI.Sprite{
 
     //FIND A GOOD WAY TO DO THIS.
     public move(){
-        // this.reRender();
+        this.reRender();
 
     }
 }

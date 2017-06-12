@@ -7,6 +7,7 @@ var Vector = (function () {
     function Vector(x, y) {
         this.x = x;
         this.y = y;
+        this.game = Game.getInstance();
     }
     return Vector;
 }());
@@ -24,31 +25,15 @@ var GameObject = (function (_super) {
 }(Vector));
 var GameOverHandler = (function () {
     function GameOverHandler() {
-    }
-    GameOverHandler.prototype.notify = function (keyHit) {
-        console.log(keyHit);
         this.game = Game.getInstance();
-        if (this.findKey(keyHit, KeyBoard.R)) {
-            console.log("HITTING R");
+    }
+    GameOverHandler.prototype.reloadKeyHit = function (hitKey) {
+        if (hitKey) {
             this.game.setup();
         }
     };
-    GameOverHandler.prototype.findKey = function (keyHit, key1, key2) {
-        for (var _i = 0, keyHit_1 = keyHit; _i < keyHit_1.length; _i++) {
-            var key = keyHit_1[_i];
-            if (key2) {
-                if (key == key1 || key == key2) {
-                    return true;
-                }
-            }
-            else {
-                if (key == key1) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    };
+    GameOverHandler.prototype.leftKeyHit = function (hitKey) { };
+    GameOverHandler.prototype.rightKeyHit = function (hitKey) { };
     return GameOverHandler;
 }());
 var ImageObject = (function (_super) {
@@ -73,6 +58,7 @@ var ImageObject = (function (_super) {
         this.create();
     };
     ImageObject.prototype.move = function () {
+        this.reRender();
     };
     return ImageObject;
 }(PIXI.Sprite));
@@ -112,7 +98,6 @@ var Game = (function () {
         var _this = this;
         this.app = new PIXI.Application(800, 600, { backgroundColor: 0x000000 });
         document.body.appendChild(this.app.view);
-        this.app.stage.interactive = true;
         this.setup();
         this.spawner = new Spawner();
         requestAnimationFrame(function () { return _this.gameLoop(); });
@@ -147,7 +132,6 @@ var Game = (function () {
     Game.prototype.gameLoop = function () {
         var _this = this;
         if (!this.gameOver) {
-            console.log("LOOPING");
             this.background.move();
             this.spawner.spawn();
             for (var _i = 0, _a = this.asteroids; _i < _a.length; _i++) {
@@ -163,12 +147,9 @@ var Game = (function () {
             this.app.renderer.render(this.app.stage);
             this.timer++;
         }
-        else {
-        }
         requestAnimationFrame(function () { return _this.gameLoop(); });
     };
     Game.prototype.loadGameOver = function () {
-        console.log("HIT!");
         this.gameSpeed = 0;
         this.rocket.remove();
         this.keyHandling.unsubscribe(this.rocket);
@@ -184,30 +165,32 @@ var Game = (function () {
 window.addEventListener("load", function () {
     Game.getInstance();
 });
-var Partical = (function (_super) {
-    __extends(Partical, _super);
-    function Partical(x, y, r, color, opacity) {
-        _super.call(this);
+var Spawner = (function () {
+    function Spawner() {
+        this.MAXMULTIPLIER = 3;
         this.game = Game.getInstance();
-        this.x = x;
-        this.y = y;
-        this.radius = r;
-        this.color = color;
-        this.opacity = opacity;
-        this.draw();
+        this.startSpeed = this.game.gameSpeed;
     }
-    Partical.prototype.remove = function () {
-        this.game.app.stage.removeChild(this);
+    Spawner.prototype.spawn = function () {
+        var spawnRateTimer = 1 / this.game.multiplier;
+        if (Util.Timer.timer(this.game.timer, 0.3)) {
+            var rate = Util.Random.random(1, this.game.multiplier);
+            for (var i = 0; i < rate; i++) {
+                this.addAsteroid();
+            }
+        }
+        if (Util.Timer.timer(this.game.timer, 1)) {
+            if (this.game.multiplier <= this.MAXMULTIPLIER - 0.1) {
+                this.game.multiplier = Number((this.game.multiplier += 0.1).toFixed(2));
+            }
+            this.game.gameSpeed = this.startSpeed * this.game.multiplier;
+        }
     };
-    Partical.prototype.draw = function () {
-        this.lineStyle(0);
-        this.beginFill(this.color, this.opacity);
-        this.drawCircle(this.x, this.y, this.radius);
-        this.endFill();
-        this.game.app.stage.addChild(this);
+    Spawner.prototype.addAsteroid = function () {
+        this.game.asteroids.push(new Falling(Util.Random.random(0, this.game.app.screen.width), -200));
     };
-    return Partical;
-}(PIXI.Graphics));
+    return Spawner;
+}());
 var TextHandler = (function (_super) {
     __extends(TextHandler, _super);
     function TextHandler(text, fontSize, color, x, y) {
@@ -231,15 +214,15 @@ var TextHandler = (function (_super) {
         this.text.x = this.x;
         this.text.y = this.y;
     };
-    TextHandler.prototype.reRender = function () {
-        this.remove();
-        this.render();
-    };
     TextHandler.prototype.remove = function () {
         this.game.app.stage.removeChild(this.text);
     };
     TextHandler.prototype.render = function () {
         this.game.app.stage.addChild(this.text);
+    };
+    TextHandler.prototype.reRender = function () {
+        this.remove();
+        this.render();
     };
     TextHandler.prototype.setText = function (text) {
         this.text.text = text;
@@ -281,33 +264,6 @@ var Falling = (function (_super) {
     };
     return Falling;
 }(Asteroid));
-var Spawner = (function () {
-    function Spawner() {
-        this.MAXMULTIPLIER = 3;
-        this.game = Game.getInstance();
-        this.startSpeed = this.game.gameSpeed;
-    }
-    Spawner.prototype.spawn = function () {
-        var spawnRateTimer = 1 / this.game.multiplier;
-        console.log(spawnRateTimer);
-        if (Util.Timer.timer(this.game.timer, 0.5)) {
-            var rate = Util.Random.random(0, this.game.multiplier);
-            for (var i = 0; i < rate; i++) {
-                this.addAsteroid();
-            }
-        }
-        if (Util.Timer.timer(this.game.timer, 1)) {
-            if (this.game.multiplier <= this.MAXMULTIPLIER - 0.1) {
-                this.game.multiplier = Number((this.game.multiplier += 0.1).toFixed(2));
-            }
-            this.game.gameSpeed = this.startSpeed * this.game.multiplier;
-        }
-    };
-    Spawner.prototype.addAsteroid = function () {
-        this.game.asteroids.push(new Falling(Util.Random.random(0, this.game.app.screen.width), -200));
-    };
-    return Spawner;
-}());
 var Background = (function () {
     function Background(speed, appWidth, appHeight) {
         this.stars = [];
@@ -342,6 +298,30 @@ var Background = (function () {
     };
     return Background;
 }());
+var Partical = (function (_super) {
+    __extends(Partical, _super);
+    function Partical(x, y, r, color, opacity) {
+        _super.call(this);
+        this.game = Game.getInstance();
+        this.x = x;
+        this.y = y;
+        this.radius = r;
+        this.color = color;
+        this.opacity = opacity;
+        this.draw();
+    }
+    Partical.prototype.remove = function () {
+        this.game.app.stage.removeChild(this);
+    };
+    Partical.prototype.draw = function () {
+        this.lineStyle(0);
+        this.beginFill(this.color, this.opacity);
+        this.drawCircle(this.x, this.y, this.radius);
+        this.endFill();
+        this.game.app.stage.addChild(this);
+    };
+    return Partical;
+}(PIXI.Graphics));
 var Star = (function (_super) {
     __extends(Star, _super);
     function Star(x, y, z, r) {
@@ -358,7 +338,6 @@ var KeyHandling = (function () {
         var _this = this;
         window.addEventListener("keydown", function (e) { return _this.keyDown(e); });
         window.addEventListener("keyup", function (e) { return _this.keyUp(e); });
-        this.keyHit = new Array();
         this.observers = new Array();
     }
     KeyHandling.prototype.subscribe = function (o) {
@@ -371,45 +350,45 @@ var KeyHandling = (function () {
             }
         }
     };
-    KeyHandling.prototype.hitFunction = function () {
+    KeyHandling.prototype.leftKey = function (keyUp) {
         for (var _i = 0, _a = this.observers; _i < _a.length; _i++) {
             var o = _a[_i];
-            o.notify(this.keyHit);
+            o.leftKeyHit(keyUp);
         }
     };
-    KeyHandling.prototype.addKey = function (key) {
-        for (var _i = 0, _a = this.keyHit; _i < _a.length; _i++) {
-            var k = _a[_i];
-            if (k == key) {
-                return true;
-            }
-        }
-        this.keyHit.push(key);
-        return true;
-    };
-    KeyHandling.prototype.removeKey = function (key) {
-        for (var i = 0; i < this.keyHit.length; i++) {
-            if (this.keyHit[i] == key) {
-                this.keyHit.splice(i, 1);
-            }
+    KeyHandling.prototype.rightKey = function (keyUp) {
+        for (var _i = 0, _a = this.observers; _i < _a.length; _i++) {
+            var o = _a[_i];
+            o.rightKeyHit(keyUp);
         }
     };
-    KeyHandling.prototype.checkKey = function (e) {
+    KeyHandling.prototype.reloadKey = function (keyUp) {
+        for (var _i = 0, _a = this.observers; _i < _a.length; _i++) {
+            var o = _a[_i];
+            o.reloadKeyHit(keyUp);
+        }
+    };
+    KeyHandling.prototype.checkKey = function (e, keyUp) {
         switch (e.keyCode) {
             case KeyBoard.LEFT:
-                return KeyBoard.LEFT;
+                this.leftKey(keyUp);
+                break;
             case KeyBoard.RIGHT:
-                return KeyBoard.RIGHT;
+                this.rightKey(keyUp);
+                break;
             case KeyBoard.A:
-                return KeyBoard.A;
+                this.leftKey(keyUp);
+                break;
             case KeyBoard.D:
-                return KeyBoard.D;
+                this.rightKey(keyUp);
+                break;
             case KeyBoard.UP:
-                return KeyBoard.UP;
+                break;
             case KeyBoard.W:
-                return KeyBoard.W;
+                break;
             case KeyBoard.R:
-                return KeyBoard.R;
+                this.reloadKey(keyUp);
+                break;
             default:
                 console.log("OTHER KEY" + e.keyCode);
                 break;
@@ -417,14 +396,10 @@ var KeyHandling = (function () {
         return null;
     };
     KeyHandling.prototype.keyDown = function (e) {
-        var keyBoard = this.checkKey(e);
-        this.addKey(keyBoard);
-        this.hitFunction();
+        this.checkKey(e, false);
     };
     KeyHandling.prototype.keyUp = function (e) {
-        var keyBoard = this.checkKey(e);
-        this.removeKey(keyBoard);
-        this.hitFunction();
+        this.checkKey(e, true);
     };
     return KeyHandling;
 }());
@@ -490,52 +465,23 @@ var Flying = (function (_super) {
         this.sideSpeed = 5;
         this.keyHit = new Array();
     }
-    Flying.prototype.notify = function (keyHit) {
-        this.keyHit = keyHit;
-        if (keyHit.length >= 1) {
-            this.checkLeftOrRight(keyHit);
-            this.checkTurbo(keyHit);
+    Flying.prototype.leftKeyHit = function (keyUp) {
+        if (keyUp) {
+            this.movingLeft = false;
         }
         else {
-            this.movingLeft = false;
-            this.movingRight = false;
-        }
-    };
-    Flying.prototype.checkLeftOrRight = function (keyHit) {
-        if (this.findKey(keyHit, KeyBoard.A, KeyBoard.LEFT)) {
             this.movingLeft = true;
+        }
+    };
+    Flying.prototype.rightKeyHit = function (keyUp) {
+        if (keyUp) {
             this.movingRight = false;
         }
-        else if (this.findKey(keyHit, KeyBoard.D, KeyBoard.RIGHT)) {
+        else {
             this.movingRight = true;
-            this.movingLeft = false;
-        }
-        else {
-            this.movingLeft = false;
-            this.movingRight = false;
         }
     };
-    Flying.prototype.checkTurbo = function (keyHit) {
-        if (this.findKey(keyHit, KeyBoard.UP, KeyBoard.W)) {
-            if (this.turboSpeed < this.maxTurbo) {
-                this.turboSpeed = Number((this.turboSpeed += 0.05).toFixed(2));
-            }
-        }
-        else {
-            if (this.turboSpeed > 1) {
-                this.turboSpeed = Number((this.turboSpeed -= 0.05).toFixed(2));
-            }
-        }
-    };
-    Flying.prototype.findKey = function (keyHit, key1, key2) {
-        for (var _i = 0, keyHit_2 = keyHit; _i < keyHit_2.length; _i++) {
-            var key = keyHit_2[_i];
-            if (key == key1 || key == key2) {
-                return true;
-            }
-        }
-        return false;
-    };
+    Flying.prototype.reloadKeyHit = function () { };
     Flying.prototype.goLeft = function () {
         this.x -= this.sideSpeed;
         this.hitBox.x -= this.sideSpeed;
@@ -545,15 +491,6 @@ var Flying = (function (_super) {
         this.hitBox.x += this.sideSpeed;
     };
     Flying.prototype.move = function () {
-        if (this.keyHit.length == 0) {
-            if (this.turboSpeed > 1) {
-                this.turboSpeed = Number((this.turboSpeed -= 0.05).toFixed(2));
-                this.game.gameSpeed + this.turboSpeed;
-            }
-            else {
-                this.game.gameSpeed + this.turboSpeed;
-            }
-        }
         if (this.movingLeft) {
             this.goLeft();
         }
@@ -562,25 +499,6 @@ var Flying = (function (_super) {
         }
     };
     return Flying;
-}(Rocket));
-var Standing = (function (_super) {
-    __extends(Standing, _super);
-    function Standing(x, y, context) {
-        _super.call(this, x, y, context);
-        this.sideSpeed = 0;
-        this.speed = 0;
-    }
-    Standing.prototype.goLeft = function () { console.log("GO LEFT"); };
-    ;
-    Standing.prototype.goRight = function () { console.log("GO RIGHT"); };
-    ;
-    Standing.prototype.actionKey = function () { };
-    ;
-    Standing.prototype.render = function () {
-        _super.prototype.render.call(this);
-    };
-    Standing.prototype.move = function () { };
-    return Standing;
 }(Rocket));
 var Util;
 (function (Util) {

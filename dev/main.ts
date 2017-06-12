@@ -37,7 +37,6 @@ class Game {
     }
     //preloading the images
     //after that load the game.
-    //TODO: Maybe we need to make an load screen?
     private preloader():void{
         PIXI.loader.add('astroid', 'images/astroid.png')
                     .add('rocket', 'images/rocket.png')
@@ -48,11 +47,8 @@ class Game {
 
     //loader - load the other stuff.
     public loader(){
-        
         this.app = new PIXI.Application(800, 600, {backgroundColor : 0x000000});
         document.body.appendChild(this.app.view);
-        this.app.stage.interactive = true;
-        // var spineBoy = new PIXI.spine.Spine(res.spineboy.spineData);
 
         this.setup();
 
@@ -60,6 +56,7 @@ class Game {
         requestAnimationFrame(() => this.gameLoop());
     }
 
+    //we need this setup function for reloading the game.
     setup(){
         //remove all the childs
         if(this.gameOver){
@@ -85,9 +82,6 @@ class Game {
 
         //Show Score
         this.scoreText = new TextHandler("Score : 1",20,"#000000",this.app.screen.width/2,20);
-
-        
-
     }
 
     scoreHandler(){
@@ -99,9 +93,7 @@ class Game {
 
     gameLoop(){
         if(!this.gameOver){
-            console.log("LOOPING");
             this.background.move();
-        
             this.spawner.spawn();
 
             for(let asteroid of this.asteroids){
@@ -117,31 +109,26 @@ class Game {
             
             this.app.renderer.render(this.app.stage);
             this.timer++;
-        }else{
-            // console.log("GAME OVER!");
-            //show game over text
-            // this.app.stage.addChild(gameOver);
         }
 
         requestAnimationFrame(() => this.gameLoop());
     }
 
     private loadGameOver(){
-        console.log("HIT!");
         this.gameSpeed = 0;
         this.rocket.remove();
+        //load the new keyHandling
         this.keyHandling.unsubscribe(<Flying>this.rocket);
         this.gameOverHandler = new GameOverHandler();
         this.keyHandling.subscribe(this.gameOverHandler);
+
         this.rocket = new Explode(this.rocket.x, this.rocket.y);
         this.gameOver = true;
         this.gameOverText = new TextHandler("GAME OVER",40,"#000000",this.app.screen.width/2,this.app.screen.height/2);
         this.extraInfo = new TextHandler("Press R to restart",20,"#000000",this.app.screen.width/2,this.app.screen.height/2 + 50);
         
     }
-} 
-
-
+}
 
 // load
 window.addEventListener("load", function() {
