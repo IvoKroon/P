@@ -10,7 +10,7 @@ dit bestand maakt het mogelijk dat typescript de Pixijs code snapt.
 
 <b>Link</b> naar game https://ivokroon.github.io/P/
 
-Af:
+#### Gedaan
 - [x] Singleton opgezet.
 - [x] Bewegende achtergrond
 - [x] Raket beweegt
