@@ -1,7 +1,9 @@
 # Project P
 
-Als speler bestuur je een raket deze moet je om de meteorieten heen laten vliegen. Ondertussen is het de bedoeling om energie op te pakken want hiermee kun je weer verder vliegen. Als de energie van de raket op is ontploft de raket en ben je game over. 
+De bedoeling van het spel is om als speler de raket door het meteorietenveld heen te bewegen. 
+Dit doe je doormiddel van de pijltjes toetsen.
 
+Link naar game https://ivokroon.github.io/P/
 Af:
 - [x] Singleton opgezet.
 - [x] Bewegende achtergrond
