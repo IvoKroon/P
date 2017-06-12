@@ -4,6 +4,7 @@ De bedoeling van het spel is om als speler de raket door het meteorietenveld hee
 Dit doe je doormiddel van de pijltjes toetsen.
 
 Link naar game https://ivokroon.github.io/P/
+
 Af:
 - [x] Singleton opgezet.
 - [x] Bewegende achtergrond
