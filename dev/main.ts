@@ -73,7 +73,7 @@ class Game {
         for(let i = 0; i<3;i++){
             this.asteroids.push(new Falling(Util.Random.random(0, this.app.screen.width),-50));
         }
-        //This is th player
+        //This is the player
         this.rocket = new Flying(this.app.screen.width / 2,this.app.screen.height - 100);
    
         //The Player needs keyhandeling so we subscibe to it!
@@ -121,9 +121,10 @@ class Game {
         this.keyHandling.unsubscribe(<Flying>this.rocket);
         this.gameOverHandler = new GameOverHandler();
         this.keyHandling.subscribe(this.gameOverHandler);
-
+        // Change the class to explode
         this.rocket = new Explode(this.rocket.x, this.rocket.y);
         this.gameOver = true;
+        //load the text
         this.gameOverText = new TextHandler("GAME OVER",40,"#000000",this.app.screen.width/2,this.app.screen.height/2);
         this.extraInfo = new TextHandler("Press R to restart",20,"#000000",this.app.screen.width/2,this.app.screen.height/2 + 50);
         

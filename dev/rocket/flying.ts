@@ -6,16 +6,10 @@ class Flying extends Rocket implements Observer{
     private movingRight:boolean = false;
 
     private sideSpeed:number;
-    private turbo:Boolean = false;
-
-    private maxTurbo:number = 5;
-    private turboSpeed:number = 1;
-    private keyHit:Array<number>;
 
     constructor(x:number,y:number){
         super(x,y,PIXI.loader.resources.rocket.texture);
         this.sideSpeed = 5;
-        this.keyHit = new Array();
     }
 
     leftKeyHit(keyUp:boolean){
@@ -38,17 +32,15 @@ class Flying extends Rocket implements Observer{
     
     goLeft(){
         this.x -= this.sideSpeed;
-        // this.graphics.x -= this.sideSpeed;
         this.hitBox.x -= this.sideSpeed;
     }
     goRight(){
         this.x += this.sideSpeed;
-        // this.graphics.x += this.sideSpeed;
         this.hitBox.x += this.sideSpeed;
     }
 
     move(){
-        // this.reRender();
+        this.reRender();
 
         if(this.movingLeft){
             this.goLeft();

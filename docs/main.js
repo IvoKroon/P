@@ -19,7 +19,6 @@ var GameObject = (function (_super) {
         this.y = y;
         this.w = w;
         this.h = h;
-        this.game = Game.getInstance();
     }
     return GameObject;
 }(Vector));
@@ -410,23 +409,15 @@ var Rocket = (function (_super) {
         var padding = this.width / 2;
         this.hitBox = new GameObject(this.x + padding / 2, this.y, this.width - padding, this.height);
     }
-    Rocket.prototype.drawHitBox = function () {
-        this.graphics = new PIXI.Graphics();
-        this.graphics.beginFill(0xFFFF00);
-        var padding = this.width / 2;
-        this.graphics.lineStyle(5, 0xFF0000);
-        this.graphics.drawRect(this.x + padding / 2, this.y, this.width - padding, this.height);
-        this.game.app.stage.addChild(this.graphics);
-    };
     return Rocket;
 }(ImageObject));
 var Explode = (function (_super) {
     __extends(Explode, _super);
     function Explode(x, y) {
         _super.call(this, x, y, null);
-        this.init();
+        this.showAnimation();
     }
-    Explode.prototype.init = function () {
+    Explode.prototype.showAnimation = function () {
         var _this = this;
         var explosionTextures = [], i;
         for (i = 0; i < 6; i++) {
@@ -447,10 +438,7 @@ var Explode = (function (_super) {
         };
         this.game.app.stage.addChild(explosion);
     };
-    Explode.prototype.move = function () {
-    };
-    Explode.prototype.notify = function () {
-    };
+    Explode.prototype.move = function () { };
     return Explode;
 }(Rocket));
 var Flying = (function (_super) {
@@ -459,11 +447,7 @@ var Flying = (function (_super) {
         _super.call(this, x, y, PIXI.loader.resources.rocket.texture);
         this.movingLeft = false;
         this.movingRight = false;
-        this.turbo = false;
-        this.maxTurbo = 5;
-        this.turboSpeed = 1;
         this.sideSpeed = 5;
-        this.keyHit = new Array();
     }
     Flying.prototype.leftKeyHit = function (keyUp) {
         if (keyUp) {
@@ -491,6 +475,7 @@ var Flying = (function (_super) {
         this.hitBox.x += this.sideSpeed;
     };
     Flying.prototype.move = function () {
+        this.reRender();
         if (this.movingLeft) {
             this.goLeft();
         }
