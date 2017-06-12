@@ -18,28 +18,26 @@ class KeyHandling implements Observable{
             }
         }
     }
-
+    //fire this if left Key is hit
     public leftKey(keyUp:boolean){
          for(let o of this.observers){
-            // o.notify(this.keyHit);
             o.leftKeyHit(keyUp);
         }
     }
-
+    //fire this if right Key is hit
     public rightKey(keyUp:boolean){
          for(let o of this.observers){
-            // o.notify(this.keyHit);
             o.rightKeyHit(keyUp);
         }
     }
-
+    //fire this if the reload key is hit
     public reloadKey(keyUp:boolean){
         for(let o of this.observers){
-            // o.notify(this.keyHit);
             o.reloadKeyHit(keyUp);
         }
     }
-
+    //Check what key there has been hitten
+    //and fire that function
     private checkKey(e:KeyboardEvent,keyUp:boolean):void{
         switch(e.keyCode){
                 case KeyBoard.LEFT:
@@ -67,7 +65,7 @@ class KeyHandling implements Observable{
             }
         return null;
     }
-
+    
     private keyDown(e:KeyboardEvent){
         this.checkKey(e,false);
     }
